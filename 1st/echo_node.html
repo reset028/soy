@@ -1,0 +1,96 @@
+<meta charset="UTF-8">
+<title>mayke.info</title>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.
+js"></script>
+<script src="/socket.io/socket.io.js"></script>
+<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/lodash.js/3.9.3/lodash.min.js"></script>
+<script type="text/javascript">
+var socket = io.connect();
+socket.on("connect", function(){});
+socket.on("disconnect", function(client){});
+socket.on("message", function(data){addMessage(data.value);});
+
+
+
+
+
+function addMessage(val) {
+    if(val==1){
+        color = "#fff";
+        fontc = "#000";
+        text = data.value;
+    }else{
+        color = "#333";
+        fontc = "#fff";
+        text = val;
+}
+update(val);
+
+    $("#answer").css("background-color",color);
+    $("#answer").css("color",fontc);
+    $("#answer").text(text);
+
+}
+
+
+var stage;
+$(document).ready(function() {
+    stage = d3.select("#d3graph").append("svg:svg").attr("width", $("#d3graph").width()).attr("height", 300);
+});
+
+var colors = d3.scale.category10();
+var d3Line = d3.svg.line()
+.x(function(d,i){return i * 10})
+.y(function(d,i){return d});
+
+var points = new Array();
+
+function update(num) {
+    points.push(num);
+    if(points.length > $("#d3graph").width()/10) {
+        points.shift();
+    }
+
+    // 削除する
+    stage.selectAll("path").remove();
+
+    // 描画する
+    stage.append("path")
+    .attr("d", d3Line(points))
+    .attr("stroke", colors(0))
+    .attr("fill", "none")
+    .attr("opacity", 1);
+
+}
+
+</script>
+<style>
+body{
+  background-color: #fff;
+}
+#answer{
+  height: 300px;
+  width:  300px;
+  font-size: 150px;
+  font-weight: bold;
+  color: #fff;
+  display: table-cell;
+  vertical-align: middle;
+  text-align: center;
+  background-color: #333;
+}
+
+
+
+</style>
+</head>
+<body>
+
+<div id="answer">?</div>
+
+<div id="d3graph" style="border:1px solid #ccc; margin-bottom:10px"></div>
+
+</body>
+</html>

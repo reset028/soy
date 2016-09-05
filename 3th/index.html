@@ -1,0 +1,217 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>mayke.info</title>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+<script src="/socket.io/socket.io.js"></script>
+<script type="text/javascript">
+var socket = io.connect();
+socket.on("connect", function(){});
+socket.on("disconnect", function(client){});
+socket.on("message", function(data){ addMessage(data.value); });
+
+
+function addMessage(val) {
+
+        color = "#333";
+        fontc = "#fff";
+        text = val;
+    
+         
+  if(text.match(/vinegar/)){
+        color = "#333";
+        fontc = "#fff";
+        text1 = Number(text.match(/[0-9]+/));
+        text1 = (-Math.log(text1/997)/0.007).toFixed(1);
+        $("#answer1").css("background-color",color);
+        $("#answer1").css("color",fontc);
+        $("#answer1").text(text1);
+        update((1024 - text1)/10);
+   
+   }else if(text.match(/sugar/)){
+        color = "#333";
+        fontc = "#fff";
+        text2 =Number(text.match(/[0-9]+/));
+        text2 = (-Math.log(text2/1000)/0.008).toFixed(1);
+        $("#answer2").css("background-color",color);
+        $("#answer2").css("color",fontc);
+        $("#answer2").text(text2);
+        update2((1024 - text2)/10);
+   
+     }else if(text.match(/salt/)){
+        color = "#333";
+        fontc = "#fff";
+        text3 = Number(text.match(/[0-9]+/));
+        text3 = (-Math.log(text3/998)/0.008).toFixed(1)
+        $("#answer2").css("background-color",color);
+        $("#answer2").css("color",fontc);
+        $("#answer3").text(text3);
+        update3((1024 - text3)/10);
+   
+     };
+$("#answer").css("background-color",color);
+    $("#answer").css("color",fontc);
+    $("#answer").text(text);
+
+};
+
+var stage;
+$(document).ready(function() {
+    stage = d3.select("#d3graph").append("svg:svg").attr("width", $("#d3graph").width()).attr("height", 100);
+});
+
+var stage2;
+$(document).ready(function() {
+    stage2 = d3.select("#d3graph2").append("svg:svg").attr("width", $("#d3graph2").width()).attr("height", 100);
+});
+
+var stage3;
+$(document).ready(function() {
+    stage3 = d3.select("#d3graph3").append("svg:svg").attr("width", $("#d3graph3").width()).attr("height\
+", 100);
+});
+
+
+
+var colors = d3.scale.category10();
+var d3Line = d3.svg.line()
+.x(function(d,i){return i * 10})
+.y(function(d,i){return d});
+
+var points = new Array();
+var points2 = new Array();
+var points3 = new Array();
+
+function update(num) {
+    points.push(num);
+    if(points.length > $("#d3graph").width()/10) {
+        points.shift();
+    }
+
+    // 削除する
+    stage.selectAll("path").remove();
+
+    // 描画する
+    stage.append("path")
+    .attr("d", d3Line(points))
+    .attr("stroke", colors(0))
+    .attr("fill", "none")
+    .attr("opacity", 1);
+
+}
+
+function update2(num) {
+    points2.push(num);
+if(points2.length > $("#d3graph2").width()/10) {
+        points2.shift();
+    }
+
+    // 削除する
+    stage2.selectAll("path").remove();
+
+    // 描画する
+    stage2.append("path")
+    .attr("d", d3Line(points2))
+    .attr("stroke", colors(0))
+    .attr("fill", "none")
+    .attr("opacity", 1);
+}
+
+function update3(num) {
+    points3.push(num);
+    if(points3.length > $("#d3graph3").width()/10) {
+        points3.shift();
+    }
+
+    // 削除する
+    stage3.selectAll("path").remove();
+
+    // 描画する
+    stage3.append("path")
+    .attr("d", d3Line(points3))
+    .attr("stroke", colors(0))
+    .attr("fill", "none")
+    .attr("opacity", 1);
+}
+
+
+</script>
+<style>
+
+#answer{
+  height: 100px;
+  width:  100px;
+  font-size: 50px;
+  font-weight: bold;
+  color: #333;
+  display: table-cell;
+  vertical-align: middle;
+  text-align: center;
+  background-color: #333;
+}
+
+#answer1{
+  height: 100px;
+  width:  100px;
+  font-size: 50px;
+font-weight: bold;
+  color: #333;
+  display: table-cell;
+  vertical-align: middle;
+  text-align: center;
+  background-color: #333;
+}
+
+#answer2{
+  height: 100px;
+  width:  100px;
+  font-size: 50px;
+  font-weight: bold;
+  color: #fff;
+  display: table-cell;
+  vertical-align: middle;
+  text-align: center;
+  background-color: #333;
+}
+
+#answer3{
+  height: 100px;
+  width:  100px;
+  font-size: 50px;
+  font-weight: bold;
+  color: #fff;
+  display: table-cell;
+  vertical-align: middle;
+  text-align: center;
+  background-color: #333;
+}
+
+
+</style>
+</head>
+<body>
+
+<!--
+<p>デバッグ用窓（後で消します）</p>
+<div id="answer">?</div>
+<br>
+
+-->
+
+<p>お酢</p>
+<div id="answer1">?</div>
+<div id="d3graph" style="border:1px solid #ccc; margin-bottom:10px"></div>
+<br>
+<p>砂糖</p>
+<div id="answer2">?</div>
+<div id="d3graph2" style="border:1px solid #ccc; margin-bottom:10px"></div>
+<br>
+<p>塩</p>
+<div id="answer3">?</div>
+<div id="d3graph3" style="border:1px solid #ccc; margin-bottom:10px"></div>
+<br>
+
+</body>
+</html>
